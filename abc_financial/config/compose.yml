@@ -1,0 +1,35 @@
+name: abc_financial
+services:
+  # databases
+  mssql_source:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_source_abc_financial
+    # passes the environment variables to the container
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+      - MSSQL_PID=${MSSQL_PID}
+    ports:
+      - "${MSSQL_DB_PORT}:1433"
+
+  postgres_target:
+    image: postgres:15-alpine
+    container_name: postgres_target_abc_financial
+    environment:
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    # - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_DB_PORT}:5432"
+
+# will add python later, google this later
+# etl_pipline:
+#   build: . # Tells Docker to look for your 'Dockerfile' in the current folder
+#   container_name: etl_pipeline_abc_financial
+#   volumes:
+#       - .:/etl_pipeline # LIVE LINK: Maps your laptop folder to the container folder
+#   environment:
+#     - DB_POSTGRES_HOST=postgres_target_abc_financial
+#     - DB_MSSQL_HOST=mssql_source_abc_financial
+#   depends_on:
+#     - postgres_target_abc_financial
+#     - mssql_source_abc_financial
