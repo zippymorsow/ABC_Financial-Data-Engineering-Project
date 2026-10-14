@@ -1,0 +1,770 @@
+{
+  "updatedAt": "2026-10-13T18:50:46.663Z",
+  "createdAt": "2026-10-09T11:45:30.769Z",
+  "id": "v1ZHeyyiEXQpLzl0",
+  "name": "init_Ingestion",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    entry_id,\n    account_code,\n    account_name,\n    amount,\n    entry_type,\n    currency,\n    posted_at,\n    reconciliation_status\nFROM\n    ecom_db.dbo.legacy_ledger;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        256
+      ],
+      "id": "14b8ff63-2695-4945-9c3e-8f73c41b49c7",
+      "name": "Microsoft SQL",
+      "notesInFlow": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "9ketqYlqrGUjSgRM",
+          "name": "ecom_db-admin_abc_financial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "bronze",
+          "mode": "list",
+          "cachedResultName": "bronze"
+        },
+        "table": {
+          "__rl": true,
+          "value": "legacyledgerrecord",
+          "mode": "list",
+          "cachedResultName": "legacyledgerrecord"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "entry_id": "={{ $('Microsoft SQL').item.json.entry_id }}",
+            "account_code": "={{ $('Microsoft SQL').item.json.account_code }}",
+            "account_name": "={{ $('Microsoft SQL').item.json.account_name }}",
+            "amount": "={{ $('Microsoft SQL').item.json.amount }}",
+            "entry_type": "={{ $('Microsoft SQL').item.json.entry_type }}",
+            "ingested_by": "={{ $workflow.name }}",
+            "ingested_at": "={{ $now.toUTC() }}",
+            "reconciliation_status": "={{ $('Microsoft SQL').item.json.reconciliation_status }}",
+            "posted_at": "={{ $('Microsoft SQL').item.json.posted_at }}",
+            "currency": "={{ $('Microsoft SQL').item.json.currency }}"
+          },
+          "matchingColumns": [
+            "entry_id"
+          ],
+          "schema": [
+            {
+              "id": "bronze_legacyledgerrecord_id",
+              "displayName": "bronze_legacyledgerrecord_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "entry_id",
+              "displayName": "entry_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "account_code",
+              "displayName": "account_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "account_name",
+              "displayName": "account_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "entry_type",
+              "displayName": "entry_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "posted_at",
+              "displayName": "posted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "reconciliation_status",
+              "displayName": "reconciliation_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "ingested_at",
+              "displayName": "ingested_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "ingested_by",
+              "displayName": "ingested_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "outputColumns": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        320,
+        176
+      ],
+      "id": "f36ab876-3004-48cc-aa38-2b36e57f4736",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "O7olgJKyKPtYUfKf",
+          "name": "ecom_db-admin_abc_financial"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "omMgRnmDzCj6FZuU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/omMgRnmDzCj6FZuU",
+          "cachedResultName": "audit trail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        -16
+      ],
+      "id": "eaacd498-c849-48d9-8a9e-7ccdaaeed8c8",
+      "name": "Call 'audit trail'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "omMgRnmDzCj6FZuU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/omMgRnmDzCj6FZuU",
+          "cachedResultName": "audit trail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1440,
+        128
+      ],
+      "id": "d091585c-6e83-4408-9fc8-1394efa289ab",
+      "name": "Call 'audit trail'1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"action\": \"INIT\",\n  \"sync_batch_id\": \"{{ $execution.id }}\",\n  \"pipeline_name\": \"{{ $workflow.name }}\",\n  \"execution_status\": \"In Progress\",\n\"trigger_started\":{{ $now.toUTC() }},\n\"triggered_by\": {{ $workflow.name }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        -16
+      ],
+      "id": "58fe4732-0643-4982-8236-9c0e110c4929",
+      "name": "Start: Construct audit trail JSON"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"action\": \"COMPLETE\",\n  \"sync_batch_id\": \"{{ $execution.id }}\",\n  \"execution_status\": \"Success\",\n\"pipeline_name\": \"{{ $workflow.name }}\",\n  \"records_extracted\": {{ $('Microsoft SQL').all().length || 0 }},\n\"records_loaded\":{{ $('Insert or update rows in a table').all().length || 0 }},\n\"trigger_ended\":{{ $now.toUTC() }},\n\"execution_summary\":\"Execution completed normally.\",\n\"triggered_by\": {{ $workflow.name }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        128
+      ],
+      "id": "fc2ad2fb-cd06-4ed4-83c3-08e90af2ea17",
+      "name": "End: Construct audit trail JSON"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        160
+      ],
+      "id": "33759c9f-204e-46b8-b436-24c15efdc04c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfad02e7-959c-4d38-b2ea-5159b750dda1",
+              "name": "source_entry_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "64502b40-d8af-4e18-88f8-20a1172e322f",
+              "name": "source_pipeline",
+              "value": "={{ $workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "80c16393-6fc0-4221-ab31-366d7a8119d9",
+              "name": "raw_payload",
+              "value": "={{ $json }}",
+              "type": "string"
+            },
+            {
+              "id": "3e815049-fe55-48ac-a0dd-4407395a7787",
+              "name": "error_message",
+              "value": "={{ $json.error.name }}\n{{ $json.error.message }}\n{{ $json.error.description }}",
+              "type": "string"
+            },
+            {
+              "id": "957cb3cf-cc97-407b-8a4f-999ac1889fda",
+              "name": "failed_at",
+              "value": "={{ DateTime.fromMillis($json.error.timestamp).toUTC() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        352
+      ],
+      "id": "47601069-68f3-4404-9463-f117195d7bac",
+      "name": "Constract DLQ JSON"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "vfAx7c4FMCVqMnSf",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/vfAx7c4FMCVqMnSf",
+          "cachedResultName": "handling failures - dlq"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        352
+      ],
+      "id": "06b6c646-5ba3-44da-8334-9e3b1f3fdd7b",
+      "name": "Call 'dlq'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "omMgRnmDzCj6FZuU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/omMgRnmDzCj6FZuU",
+          "cachedResultName": "audit trail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1216,
+        352
+      ],
+      "id": "05fe9ee9-929a-4f73-8860-07928682b26e",
+      "name": "Call 'audit trail'2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8bf38f86-1c47-496f-a9c2-95793b65ad39",
+              "name": "sync_batch_id",
+              "value": "={{ $json.source_entry_id }}",
+              "type": "string"
+            },
+            {
+              "id": "cba1d157-b352-449d-979c-d8d48d013cbb",
+              "name": "pipeline_name",
+              "value": "={{ $workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1393326d-eb87-43f5-8955-8477140b979f",
+              "name": "execution_status",
+              "value": "Failed",
+              "type": "string"
+            },
+            {
+              "id": "19fc9bd7-dd69-4e2d-9d24-1759841b2d14",
+              "name": "records_extracted",
+              "value": "={{ $('Microsoft SQL').all().length || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "b121b59f-261e-415c-95b8-e5267e1329e2",
+              "name": "records_loaded",
+              "value": "={{ ($('Microsoft SQL').all().length - $('Insert or update rows in a table').all().length) || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "e86d0913-0e8c-499d-bb16-045f25f6b7dc",
+              "name": "records_rejected_dlq",
+              "value": "={{ $('Call \\'dlq\\'').all().length || 0 }}",
+              "type": "string"
+            },
+            {
+              "id": "a0a83728-b159-4b7d-be45-db0420df511b",
+              "name": "execution_metadata",
+              "value": "={{ $json.metadata || {} }}",
+              "type": "string"
+            },
+            {
+              "id": "3d41a68e-6790-47fb-8386-c1a90bd0eba8",
+              "name": "execution_summary",
+              "value": "={{ $('Call \\'dlq\\'').all().toJsonString() }}",
+              "type": "string"
+            },
+            {
+              "id": "a2453566-4f1e-4840-93a0-75b1ef2eb950",
+              "name": "trigger_ended",
+              "value": "={{ $now.toUTC() }}",
+              "type": "string"
+            },
+            {
+              "id": "3c84e26f-0081-488d-bca2-548134982347",
+              "name": "triggered_by",
+              "value": "={{ $workflow.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        352
+      ],
+      "id": "130c9f6a-0378-42df-9dee-5d3dbd4fb2e8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ouXWiqaxm1ZTkzEA",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ouXWiqaxm1ZTkzEA",
+          "cachedResultName": "fetch_pipeline_config"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        992,
+        128
+      ],
+      "id": "ca6920dd-0608-483a-94e9-4aa777abd0db",
+      "name": "Initial Standard Transformation"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5980437f-7034-4953-80b6-a6ad3a02c1a9",
+              "name": "source",
+              "value": "={{ $('Insert or update rows in a table').params.schema.value }}.{{ $('Insert or update rows in a table').params.table.value }}",
+              "type": "string"
+            },
+            {
+              "id": "e7ca5bdf-149a-4f8c-b4ed-d2ff1616f767",
+              "name": "=destination",
+              "value": "=silver.{{ $('Insert or update rows in a table').params.table.value }}",
+              "type": "string"
+            },
+            {
+              "id": "9a512963-f5e2-44a0-99d4-8cd2e90c40df",
+              "name": "silver_company_id",
+              "value": 4568456,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        128
+      ],
+      "id": "56099311-fc4c-4d76-b240-f6d0b1134730",
+      "name": "Set table source and destination"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        544,
+        128
+      ],
+      "id": "0ea913ee-a078-4177-8954-75f82b0e2981",
+      "name": "Aggregate table & schema"
+    }
+  ],
+  "connections": {
+    "Microsoft SQL": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Insert or update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Aggregate table & schema",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Constract DLQ JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'audit trail'": {
+      "main": [
+        []
+      ]
+    },
+    "Start: Construct audit trail JSON": {
+      "main": [
+        [
+          {
+            "node": "Call 'audit trail'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "End: Construct audit trail JSON": {
+      "main": [
+        [
+          {
+            "node": "Call 'audit trail'1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Start: Construct audit trail JSON",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Microsoft SQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Constract DLQ JSON": {
+      "main": [
+        [
+          {
+            "node": "Call 'dlq'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'dlq'": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'audit trail'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initial Standard Transformation": {
+      "main": [
+        [
+          {
+            "node": "End: Construct audit trail JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set table source and destination": {
+      "main": [
+        [
+          {
+            "node": "Initial Standard Transformation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate table & schema": {
+      "main": [
+        [
+          {
+            "node": "Set table source and destination",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Hong_Kong",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "pSsGMxtg7c4UB5sS"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        null
+      ],
+      "recurrenceRuleSignatures": [
+        null
+      ]
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "2d6cade2-58d1-4626-b3ac-518400713325",
+  "activeVersionId": null,
+  "versionCounter": 981,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-09T11:45:30.772Z",
+      "createdAt": "2026-10-09T11:45:30.772Z",
+      "role": "workflow:owner",
+      "workflowId": "v1ZHeyyiEXQpLzl0",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

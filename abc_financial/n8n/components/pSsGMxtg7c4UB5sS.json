@@ -1,0 +1,154 @@
+{
+  "updatedAt": "2026-10-12T12:14:43.649Z",
+  "createdAt": "2026-10-11T07:56:37.692Z",
+  "id": "pSsGMxtg7c4UB5sS",
+  "name": "handling failures - global error to audit trail",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"action\": \"COMPLETE\",\n  \"sync_batch_id\": \"{{ $json.execution.id }}\",\n  \"pipeline_name\": \"{{ $workflow.name }}\",\n  \"execution_status\": \"Failed\",\n  \"records_extracted\": 0,\n  \"records_loaded\": 0,\n  \"records_rejected_dlq\": 0,\n  \"execution_summary\": \"{{ $json.execution.error.message }}\",\n  \"execution_metadata\": \"{}\",\n  \"trigger_ended\": \"{{ $now.toUTC().toISO() }}\",\n  \"triggered_by\": \"{{ $json.workflow.name }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        -48
+      ],
+      "id": "908ed15c-75dc-4771-a2a6-5d18e6755163",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "omMgRnmDzCj6FZuU",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/omMgRnmDzCj6FZuU",
+          "cachedResultName": "audit trail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        -48
+      ],
+      "id": "342e4cad-285f-4a4c-92e3-e97e78fb2436",
+      "name": "Call 'audit trail'2"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        48
+      ],
+      "id": "c571f249-372d-4d2a-8e01-36e890e3d27d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -144
+      ],
+      "id": "f619c152-077a-44f8-b451-b3c2d91d1aa1",
+      "name": "Error Trigger"
+    }
+  ],
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'audit trail'2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "d2f50f86-da29-4a87-94bc-a2b9595f1ac3",
+  "activeVersionId": "d2f50f86-da29-4a87-94bc-a2b9595f1ac3",
+  "versionCounter": 12,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-11T07:56:37.694Z",
+      "createdAt": "2026-10-11T07:56:37.694Z",
+      "role": "workflow:owner",
+      "workflowId": "pSsGMxtg7c4UB5sS",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": "Version d2f50f86",
+    "description": ""
+  }
+}

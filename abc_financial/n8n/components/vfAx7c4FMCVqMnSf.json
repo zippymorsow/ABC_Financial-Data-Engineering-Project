@@ -1,0 +1,179 @@
+{
+  "updatedAt": "2026-10-12T12:12:06.993Z",
+  "createdAt": "2026-10-11T08:49:45.530Z",
+  "id": "vfAx7c4FMCVqMnSf",
+  "name": "handling failures - dlq",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "38f4a565-0fde-4b9a-aa1d-1fecd7813ee4",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "sys_migration_dlq",
+          "mode": "list",
+          "cachedResultName": "sys_migration_dlq"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "dlq_id": 0,
+            "source_entry_id": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "dlq_id",
+              "displayName": "dlq_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "failed_at",
+              "displayName": "failed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source_entry_id",
+              "displayName": "source_entry_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "raw_payload",
+              "displayName": "raw_payload",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pipeline_stage",
+              "displayName": "pipeline_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0e0ba8da-c6f7-40d8-89ec-66d03c367ab0",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "O7olgJKyKPtYUfKf",
+          "name": "ecom_db-admin_abc_financial"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "pSsGMxtg7c4UB5sS",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "c0298331-e8fc-446c-8f04-d3e358adcda0",
+  "activeVersionId": "c0298331-e8fc-446c-8f04-d3e358adcda0",
+  "versionCounter": 14,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-11T08:49:45.534Z",
+      "createdAt": "2026-10-11T08:49:45.534Z",
+      "role": "workflow:owner",
+      "workflowId": "vfAx7c4FMCVqMnSf",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": "Version c0298331",
+    "description": ""
+  }
+}

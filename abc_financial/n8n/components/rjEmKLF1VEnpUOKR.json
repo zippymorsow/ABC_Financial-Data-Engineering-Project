@@ -1,0 +1,50 @@
+{
+  "updatedAt": "2026-10-12T12:14:20.662Z",
+  "createdAt": "2026-10-12T12:14:20.662Z",
+  "id": "rjEmKLF1VEnpUOKR",
+  "name": "final constraint - data quality",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "f082a33e-8d96-4af1-8a1d-630f167af754",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-12T12:14:20.664Z",
+      "createdAt": "2026-10-12T12:14:20.664Z",
+      "role": "workflow:owner",
+      "workflowId": "rjEmKLF1VEnpUOKR",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

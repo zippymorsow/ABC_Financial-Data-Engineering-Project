@@ -1,0 +1,83 @@
+{
+  "updatedAt": "2026-10-11T08:00:57.000Z",
+  "createdAt": "2026-10-11T08:00:49.393Z",
+  "id": "fahdAvhsOiRyZ6tZ",
+  "name": "My Sub-Workflow 2",
+  "description": null,
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        260,
+        340
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "b5942df6-0160-4ef7-965d-57583acdc8aa",
+      "name": "Replace me with your logic",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        520,
+        340
+      ],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Replace me with your logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "dc72a438-35ee-419b-85eb-ab186ee9dcb8",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-11T08:00:49.397Z",
+      "createdAt": "2026-10-11T08:00:49.397Z",
+      "role": "workflow:owner",
+      "workflowId": "fahdAvhsOiRyZ6tZ",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

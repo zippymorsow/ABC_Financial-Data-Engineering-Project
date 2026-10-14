@@ -1,0 +1,264 @@
+{
+  "updatedAt": "2026-10-11T16:42:12.091Z",
+  "createdAt": "2026-10-10T12:01:49.685Z",
+  "id": "omMgRnmDzCj6FZuU",
+  "name": "audit trail",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e5716586-03c9-402c-be44-05992bcb3bd1",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "sys_audittrail",
+          "mode": "list",
+          "cachedResultName": "sys_audittrail"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "records_extracted": "={{ $json.records_extracted }}\n",
+            "records_loaded": "={{ $json.records_loaded || 0 }}",
+            "records_rejected_dlq": "={{ $json.records_rejected_dlq }}",
+            "sync_batch_id": "={{ $json.sync_batch_id }}",
+            "pipeline_name": "={{ $json.triggered_by }}",
+            "execution_status": "={{ $json.execution_status }}",
+            "execution_summary": "={{ $json.execution_summary }}",
+            "execution_metadata": "={{ $json.execution_metadata }}",
+            "triggered_by": "={{ $json.pipeline_name }}"
+          },
+          "matchingColumns": [
+            "sync_batch_id"
+          ],
+          "schema": [
+            {
+              "id": "sys_audittrail_id",
+              "displayName": "sys_audittrail_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sync_batch_id",
+              "displayName": "sync_batch_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pipeline_name",
+              "displayName": "pipeline_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "execution_status",
+              "displayName": "execution_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "records_extracted",
+              "displayName": "records_extracted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "records_loaded",
+              "displayName": "records_loaded",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "records_rejected_dlq",
+              "displayName": "records_rejected_dlq",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "execution_metadata",
+              "displayName": "execution_metadata",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "execution_summary",
+              "displayName": "execution_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "execution_duration",
+              "displayName": "execution_duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "trigger_started",
+              "displayName": "trigger_started",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "trigger_ended",
+              "displayName": "trigger_ended",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "triggered_by",
+              "displayName": "triggered_by",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        224,
+        0
+      ],
+      "id": "761a2d26-943d-40d2-94d6-07b2635d1309",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "O7olgJKyKPtYUfKf",
+          "name": "ecom_db-admin_abc_financial"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Hong_Kong",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "758c2248-ab5b-49b6-b739-6759f6823343",
+  "activeVersionId": "758c2248-ab5b-49b6-b739-6759f6823343",
+  "versionCounter": 91,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-10T12:01:49.688Z",
+      "createdAt": "2026-10-10T12:01:49.688Z",
+      "role": "workflow:owner",
+      "workflowId": "omMgRnmDzCj6FZuU",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": "Version 758c2248",
+    "description": "update records_rejected_dlq syntax"
+  }
+}

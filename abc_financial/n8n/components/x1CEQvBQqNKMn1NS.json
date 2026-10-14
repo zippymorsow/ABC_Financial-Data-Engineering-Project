@@ -1,0 +1,50 @@
+{
+  "updatedAt": "2026-10-12T12:11:22.276Z",
+  "createdAt": "2026-10-12T12:11:22.276Z",
+  "id": "x1CEQvBQqNKMn1NS",
+  "name": "constraint check - schema enforcement",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "07031729-0d84-4d3f-88b5-8bf5bce6910c",
+  "activeVersionId": null,
+  "versionCounter": 1,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-12T12:11:22.280Z",
+      "createdAt": "2026-10-12T12:11:22.280Z",
+      "role": "workflow:owner",
+      "workflowId": "x1CEQvBQqNKMn1NS",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}

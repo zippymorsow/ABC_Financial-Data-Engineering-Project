@@ -1,0 +1,156 @@
+{
+  "updatedAt": "2026-10-13T19:25:44.355Z",
+  "createdAt": "2026-10-13T10:55:42.804Z",
+  "id": "ouXWiqaxm1ZTkzEA",
+  "name": "fetch_pipeline_config",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "03d5cd80-8aa7-4295-b219-16ed137ad315",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "#GOOGLE\n# In Python (Native) mode, incoming items are passed as a standard list named '_items'\nitems = _items\n\nsql_columns = []\n\nfor item in items:\n    # item is an n8n dictionary containing your incoming row metadata\n    col = item.get('json', {})\n    column_name = col.get('column_name')\n    allow_null = col.get('allow_null')\n    transform_type = col.get('transform_type')\n    is_pii = col.get('is_pii')\n    \n    # 1. Determine base column or default fallback if NULL is not allowed\n    base_expression = column_name\n    if allow_null is False or str(allow_null).lower() == 'false':\n        fallback = col.get('default_fallback')\n        if fallback is None:\n            fallback = \"''\"\n        base_expression = f\"COALESCE({column_name}, {fallback})\"\n\n    # 2. Handle Data Privacy Policy (PII Masking & Hashing)\n    if is_pii is True or str(is_pii).lower() == 'true':\n        if transform_type == 'hash':\n            sql_columns.append(f\"encode(sha256({base_expression}::bytea), 'hex') AS {column_name}\")\n            continue\n        elif transform_type == 'mask':\n            sql_columns.append(f\"CONCAT('XXXX-XXXX-XXXX-', RIGHT({base_expression}::text, 4)) AS {column_name}\")\n            continue\n\n    # 3. Handle Case Normalization & Numeric Precision/Scale Casting\n    if transform_type == 'upper':\n        sql_columns.append(f\"UPPER({base_expression}::text) AS {column_name}\")\n    elif transform_type == 'lower':\n        sql_columns.append(f\"LOWER({base_expression}::text) AS {column_name}\")\n    elif transform_type == 'capitalize':\n        sql_columns.append(f\"INITCAP({base_expression}::text) AS {column_name}\")\n    elif transform_type == 'decimal':\n        scale = col.get('decimal_scale') or '10,5'\n        sql_columns.append(f\"CAST({base_expression} AS DECIMAL({scale})) AS {column_name}\")\n    else:\n        sql_columns.append(f\"{base_expression} AS {column_name}\")\n\n# Join all generated column selections into a single multi-line text block\nselect_clause_string = \",\\n  \".join(sql_columns)\n\n# Return the single combined string block nested inside an n8n json dictionary structure\nreturn [{\n    \"json\": {\n        \"select_clause\": select_clause_string\n    }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "c29a9fc8-673e-4584-8485-714c4a9111d7",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT column_name, transform_type, decimal_scale, allow_null\nFROM public.sys_pipeline_transform_config\nWHERE silver_company_id = {{ $json.silver_company_id }} AND LOWER(target_table) = '{{ $json.source }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f3a4609a-3ad6-4a08-991d-f582a3851f18",
+      "name": "Fetch pipeline transformation configs",
+      "credentials": {
+        "postgres": {
+          "id": "O7olgJKyKPtYUfKf",
+          "name": "ecom_db-admin_abc_financial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Drop target if it exists, or handle an upsert depending on app requirements\n---WHY? DROP TABLE IF EXISTS application_layer.users;\n\n-- Run the highly efficient, compiled SQL transformation statement\nSELECT \n  {{ $json.select_clause }}\nINTO {{ $('When Executed by Another Workflow').item.json.destination }}\nFROM {{ $('When Executed by Another Workflow').item.json.source }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        0
+      ],
+      "id": "a030f31b-1c10-49ed-b9c5-1ff57498ec34",
+      "name": "Insert data to destination",
+      "credentials": {
+        "postgres": {
+          "id": "Wgb9U3MYTeiAoB9X",
+          "name": "postgres-admin_abc_financial"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Fetch pipeline transformation configs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "Insert data to destination",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch pipeline transformation configs": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "333c4265-8178-4c60-a2f9-8f57d1b8e41a",
+  "activeVersionId": "5ba03cd0-4471-461b-8088-b475dcc64b92",
+  "versionCounter": 81,
+  "triggerCount": 0,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "shared": [
+    {
+      "updatedAt": "2026-10-13T10:55:42.806Z",
+      "createdAt": "2026-10-13T10:55:42.806Z",
+      "role": "workflow:owner",
+      "workflowId": "ouXWiqaxm1ZTkzEA",
+      "projectId": "npqy6EeFq3gFREFz",
+      "project": {
+        "updatedAt": "2026-10-09T04:32:56.669Z",
+        "createdAt": "2026-10-09T04:32:19.695Z",
+        "id": "npqy6EeFq3gFREFz",
+        "name": "joan suarez <jsuarez336@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "customTelemetryTags": [],
+        "creatorId": "43dfea66-05db-4ab3-9190-d3b6690d6968"
+      }
+    }
+  ],
+  "versionMetadata": {
+    "name": null,
+    "description": null
+  }
+}
