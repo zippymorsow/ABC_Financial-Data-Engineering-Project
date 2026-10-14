@@ -1,7 +1,3 @@
-CREATE DATABASE ecom_db;
-GO
-USE ecom_db; -- Or your target MSSQL DB
-GO
 
 CREATE TABLE legacy_ledger (
     entry_id INT PRIMARY KEY IDENTITY(1,1),
@@ -21,3 +17,7 @@ INSERT INTO legacy_ledger (account_code, account_name, amount, entry_type, curre
 ('1200', 'Accounts Receivable',   1000.0000,  'DEBIT',  'USD', '2026-01-15 10:30:00', 'completed'),
 ('4010', 'Product Sales Revenue',  25000.0000, 'CREDIT', 'PHP', '2026-01-16 14:15:00', 'COMPLETED'), -- Text anomaly
 ('1010', 'Cash Operating Account', 25000.0000, 'DEBIT',  'PHP', '2026-01-16 14:15:00', 'completed');
+
+--broken data sample
+INSERT INTO legacy_ledger (account_code, account_name, amount, entry_type, currency, posted_at, reconciliation_status) 
+VALUES ('99', 'Broken Account Error Row', 400.00, 'DEBIT', 'PHP', GETDATE(), 'unverified');

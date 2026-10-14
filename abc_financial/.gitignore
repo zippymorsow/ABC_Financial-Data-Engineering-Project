@@ -1,2 +1,5 @@
 # folders
-v1
+
+# files
+.env
+build notes.md

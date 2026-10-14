@@ -1,25 +1,81 @@
 name: abc_financial
+
 services:
-  # databases
+  # MSSQL Source Database
   mssql_source:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    # image: ://microsoft.com
     container_name: mssql_source_abc_financial
-    # passes the environment variables to the container
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
       - MSSQL_PID=${MSSQL_PID}
     ports:
-      - "${MSSQL_DB_PORT}:1433"
+      - "${MSSQL_DB_PORT}:${MSSQL_DB_DOCKER_PORT}"
+    volumes:
+      - mssql_data:${MSSQL_DATA}
+    networks:
+      - app-network
 
+  # PostgreSQL Target Database
   postgres_target:
-    image: postgres:15-alpine
+    image: postgres:18
     container_name: postgres_target_abc_financial
     environment:
-    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    # - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_DEFAULT_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - "${POSTGRES_DB_PORT}:5432"
+      - "${POSTGRES_DB_PORT}:${POSTGRES_DB_DOCKER_PORT}"
+    volumes:
+      - postgres_data:${POSTGRES_DATA}
+    networks:
+      - app-network
+
+  # n8n Automation Engine (Connected to both databases)
+  n8n_abc_financial:
+    image: docker.n8n.io/n8nio/n8n:2.31.4
+    container_name: n8n_abc_financial
+    ports:
+      - "${N8N_PORT}:${N8N_DOCKER_PORT}"
+    environment:
+      - N8N_HOST=${N8N_ENVIRONMENT}
+      # Task Runner Core Configuration
+      - N8N_RUNNERS_ENABLED=${N8N_RUNNERS_ENABLED}
+      - N8N_RUNNERS_MODE=${N8N_RUNNERS_MODE}
+      - N8N_RUNNERS_BROKER_LISTEN_ADDRESS=${N8N_RUNNERS_BROKER_LISTEN_ADDRESS}
+      - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
+    volumes:
+      - n8n_data:${N8N_DATA}
+    networks:
+      - app-network
+    depends_on:
+      - mssql_source
+      - postgres_target
+      - n8n_task_runner
+  
+  # The Official Python Task Runner Sidecar (Handles Python Code Nodes securely)
+  n8n_task_runner:
+    image: n8nio/runners:2.31.4
+    container_name: n8n_task_runner_abc_financial
+    environment:
+      - N8N_RUNNERS_AUTH_TOKEN=${N8N_RUNNERS_AUTH_TOKEN}
+      - N8N_RUNNERS_TASK_BROKER_URI=http://n8n_abc_financial:${N8N_PORT}
+    networks:
+      - app-network
+    volumes:
+      - n8n_data:${N8N_DATA}
+
+# Global Named Volumes to ensure permanent data preservation
+volumes:
+  mssql_data:
+    external: true
+    name: abc_financial_mssql_data
+  postgres_data:
+  n8n_data:
+
+networks:
+  app-network:
+    driver: bridge
 
 # will add python later, google this later
 # etl_pipline:
